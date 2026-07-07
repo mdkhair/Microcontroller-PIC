@@ -3,9 +3,7 @@
 // Tetapan asas (Configuration Bits) yang ringkas dan padat
 __CONFIG(FOSC_HS & WDTE_OFF & LVP_OFF);
 
-// Kekerapan kristal (Crystal Oscillator) mesti didefinisikan untuk menggunakan fungsi delay
-// 12000000 merujuk kepada 12MHz. (Sila ubah ke 4000000 jika papan anda menggunakan kristal 4MHz)
-#define _XTAL_FREQ 12000000 
+#define _XTAL_FREQ 4000000 
 
 void main() {
     // 1. Inisialisasi Port
