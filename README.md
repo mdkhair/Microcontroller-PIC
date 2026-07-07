@@ -21,3 +21,18 @@ Parameter yang digugurkan seperti PWRTE_ON, BOREN_OFF, CP_OFF (Code Protection),
 Jika anda membuangnya dari baris kod, pengkompil (compiler HI-TECH C) akan secara automatik membiarkan fungsi tersebut pada nilai lalai kilang (factory default). Untuk silibus pembelajaran seperti kerlipan LED, membaca suis, atau paparan LCD, ketiadaan parameter tambahan ini tidak akan memberi kesan negatif kepada kelancaran logik program anda.
 
 Maka, cukup untuk anda menulis __CONFIG(FOSC_HS & WDTE_OFF & LVP_OFF);
+
+
+**4. Memahami Kod Arahan Hex LCD (Command Glossary)**
+
+_Matikan Fungsi Analog (ADCON1 = 0x06;): Seperti yang kita pelajari sebelum ini, pin kawalan LCD iaitu RA5, RA4, dan RA3 terletak pada PORTA. Anda wajib menukarnya ke mod Digital, jika tidak skrin LCD langsung tidak akan bertindak balas!_
+
+_Cabut Pelompat JP1: Memandangkan bas data PORTD dikongsi bersama modul 8 LED (Running Lights), disyorkan untuk mencabut pelompat JP1 supaya LED tidak menarik arus atau mengganggu isyarat data LCD_
+
+Dalam kod di atas, kita banyak menggunakan nilai Heksadesimal seperti 0x38, 0x0C, 0x80, dan 0xC0. Berikut adalah senarai rujukan pantas arahan LCD yang paling berguna untuk pengajaran dalam makmal:
+
+<img width="476" height="383" alt="image" src="https://github.com/user-attachments/assets/d984709e-6817-45dd-9b76-8a51c4520364" />
+
+
+
+
