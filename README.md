@@ -1,3 +1,7 @@
+<img width="1024" height="767" alt="image" src="https://github.com/user-attachments/assets/d830033d-039e-4620-88f8-d12bab37b5cf" />
+
+
+
 Apa itu __CONFIG()?
 __CONFIG() merujuk kepada Configuration Bits (atau sering dipanggil Fuses). Ini adalah tetapan asas perkakasan yang perlu dikonfigurasi sebelum cip mula menjalankan sebarang program.
 
