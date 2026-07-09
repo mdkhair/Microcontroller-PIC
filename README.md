@@ -192,7 +192,7 @@ Dalam kit ini, kita menggunakan Bahasa C dan pengkompil HI-TECH C.
 __CONFIG(FOSC_HS & WDTE_OFF & LVP_OFF);
 
 // 3. Kelajuan Jam / Kristal (Clock Speed)
-#define _XTAL_FREQ 12000000 
+#define _XTAL_FREQ 4000000 
 
 // 4. Fungsi Utama (Main Function)
 void main() {
@@ -211,6 +211,104 @@ void main() {
 ```
 
 Setiap kali anda memulakan projek baharu di MPLAB, anda mesti membina "kerangka" kod ini. Tanpa kerangka ini, cip anda tidak akan dapat berfungsi.
+
+Penerangan Kerangka:
+
+#include <htc.h> : Arahan kepada pengkompil untuk memuatkan "kamus" rahsia PIC. Tanpa ini, perisian tidak akan faham apa itu PORTD atau TRISA.
+
+__CONFIG(...) : Ini adalah "fius perkakasan". FOSC_HS memberitahu cip untuk menggunakan kristal kelajuan tinggi luaran. WDTE_OFF mematikan pemasa anjing pengawal (Watchdog Timer) supaya cip tidak restart sendiri secara rawak.
+
+_XTAL_FREQ : Memberitahu pengkompil bahawa kristal pada papan kita berkelajuan 12MHz. Ini sangat penting supaya fungsi lengah masa (__delay_ms) dapat dikira dengan tepat.
+
+while(1) : Mikropengawal mesti mempunyai gelung yang tidak berkesudahan. Jika tiada gelung ini, mikropengawal akan membaca kod sehingga ke bawah, dan kemudian "tertidur" atau crash.
+
+2. Kunci Utama PIC: Daftar TRIS dan PORT
+
+Ini adalah konsep PALING PENTING dalam pengaturcaraan mikropengawal. Kaki (pin) mikropengawal boleh menjadi Input (telinga/mata untuk mendengar sensor) ATAU Output (tangan/suara untuk mengawal lampu/motor).
+
+Anda sebagai pengaturcara yang mesti menentukan sifat setiap kaki tersebut!
+
+a) Daftar TRIS (Data Direction Register)
+
+Fungsi TRIS adalah untuk menentukan arah. Adakah pin itu Input atau Output?
+
+Tips Menghafal: * Logik 1 = Input (Menyerupai huruf I)
+
+Logik 0 = Output (Menyerupai huruf O)
+
+Contoh Penulisan:
+
+TRISD = 0xFF; (Semua 8 pin pada PORTD menjadi Input)
+
+TRISD = 0x00; (Semua 8 pin pada PORTD menjadi Output)
+
+TRISD0 = 0; (Hanya 1 pin iaitu RD0 menjadi Output)
+
+b) Daftar PORT (Data Register)
+
+Selepas anda menetapkan arah (TRIS), fungsi PORT digunakan untuk melakukan tindakan.
+
+Jika pin adalah Output (TRIS = 0): PORT menentukan nilai voltan yang dikeluarkan.
+
+PORTD = 0xFF; (Keluarkan 5V / HIGH pada semua pin PORTD)
+
+PORTD = 0x00; (Keluarkan 0V / LOW pada semua pin PORTD)
+
+RD0 = 1; (Keluarkan 5V pada pin RD0 sahaja)
+
+Jika pin adalah Input (TRIS = 1): PORT digunakan untuk membaca voltan luar.
+
+if (RB0 == 1) (Membaca adakah suis pada pin RB0 sedang ditekan atau tidak)
+
+3. Sistem Nombor (Binary vs Hexadecimal)
+
+Dalam pengaturcaraan PIC, setiap PORT mempunyai 8 pin (Bit 0 hingga Bit 7). Untuk mengawal 8 pin ini serentak, kita biasanya tidak menulis kod panjang berjela. Kita menggunakan sistem Hexadecimal (Perenambelasan).
+
+<img width="866" height="164" alt="image" src="https://github.com/user-attachments/assets/fcb83190-4744-47e6-8c1d-2a9b77e5dcc0" />
+
+4. Program Pertama Anda: "Hello World" Mikropengawal
+
+Dalam dunia perisian komputer, program pertama anda biasanya adalah mencetak perkataan "Hello World" ke skrin. Dalam dunia mikropengawal elektronik, "Hello World" kita adalah menghidupkan dan mengerdipkan seketul lampu LED.
+
+Mari kita kerdipkan Lampu LED pertama (L0) yang disambungkan pada pin RD0.
+
+Kod Latihan 1: LED Berkelip (Blink)
+```c
+#include <htc.h>
+
+__CONFIG(FOSC_HS & WDTE_OFF & LVP_OFF);
+#define _XTAL_FREQ 4000000 // Kristal 12MHz
+
+void main() {
+    
+    // --- TETAPAN AWAL ---
+    TRISD = 0x00;   // Tetapkan semua pin PORTD sebagai OUTPUT (0)
+    PORTD = 0x00;   // Matikan semua LED sebagai permulaan
+    
+    // --- GELUNG UTAMA ---
+    while(1) {
+        
+        RD0 = 1;         // Berikan logik HIGH (5V) -> LED L0 Menyala
+        __delay_ms(1000); // Tunggu selama 1000 milisaat (1 saat)
+        
+        RD0 = 0;         // Berikan logik LOW (0V) -> LED L0 Padam
+        __delay_ms(1000); // Tunggu selama 1 saat
+        
+    }
+}
+```
+Cabaran Makmal:
+
+Cuba salin kod di atas ke dalam MPLAB, tekan butang Build, dan muat turun (Burn) ke dalam BitWise PIC Kit anda menggunakan PICkit 2.
+(Peringatan: Pastikan jumper JP1 untuk LED telah dipasang di atas papan!)
+
+Jika lampu LED L0 berkelip 1 saat menyala dan 1 saat padam, TAHNIAH! Anda kini telah sah menjadi seorang pengaturcara mikropengawal.
+
+Eksperimen Sendiri:
+
+Cuba tukarkan RD0 kepada RD7. Apa yang berlaku?
+
+Cuba tukarkan masa __delay_ms(1000) kepada __delay_ms(100). Apa perbezaan pada mata anda?
 
 Apa itu __CONFIG()?
 __CONFIG() merujuk kepada Configuration Bits (atau sering dipanggil Fuses). Ini adalah tetapan asas perkakasan yang perlu dikonfigurasi sebelum cip mula menjalankan sebarang program.
