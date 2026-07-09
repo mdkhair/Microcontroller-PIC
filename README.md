@@ -1,3 +1,80 @@
+Selamat datang ke modul pembelajaran BitWise PIC Microcontroller Kit. Sebelum kita mula menulis kod pengaturcaraan dan mengawal komponen elektronik, adalah sangat penting untuk kita memahami apakah sebenarnya "otak" di sebalik kit ini.
+
+**1. Apakah itu Mikropengawal (Microcontroller)?**
+
+Secara ringkasnya, Mikropengawal (Microcontroller / MCU) adalah sebuah "komputer mini" yang dibina sepenuhnya di atas satu cip litar bersepadu (IC - Integrated Circuit).
+
+Jika komputer peribadi (PC) atau komputer riba anda memerlukan papan induk (motherboard) yang besar untuk menyambungkan pemproses (CPU), memori (RAM), dan cakera keras (Hard Disk) secara berasingan, mikropengawal merangkumkan kesemua komponen ini ke dalam satu cip silikon yang kecil.
+
+Sebuah mikropengawal yang lengkap biasanya mempunyai:
+
+CPU (Unit Pemprosesan Pusat): Bertindak sebagai "otak" yang berfikir, mengira, dan melaksanakan arahan baris demi baris.
+
+Memori ROM / Flash: Tempat kod program (seperti kod C yang kita tulis) disimpan secara kekal. Data di sini tidak akan hilang walaupun bekalan kuasa dimatikan.
+
+Memori RAM: Tempat penyimpanan data sementara (seperti nilai pembolehubah, kiraan masa) semasa cip sedang beroperasi.
+
+Peranti I/O (Input/Output): "Kaki-kaki" cip yang membolehkan ia berkomunikasi dengan dunia luar.
+
+Input: Boleh disambung kepada butang tekan, alat kawalan jauh (Inframerah), atau penderia (suhu, cahaya, pergerakan).
+
+Output: Boleh mengawal lampu LED, skrin LCD, Buzzer (penggera bunyi), atau motor elektrik.
+
+**2. Kegunaan dan Contoh-contoh Aplikasi**
+
+Mikropengawal tidak direka untuk melayari internet atau bermain permainan video grafik tinggi seperti PC. Ia direka khas untuk Sistem Terbenam (Embedded Systems), iaitu melakukan satu tugas yang khusus, berulang kali, dengan sangat cekap dan pantas.
+
+Mungkin anda tidak perasan, tetapi kehidupan harian kita sebenarnya dikelilingi oleh berpuluh-puluh mikropengawal! Berikut adalah contoh penggunaannya:
+
+Peralatan Rumah (Home Appliances): * Mesin Basuh Automatik: Mikropengawal membaca butang tetapan anda, mengawal injap air masuk, memutar motor pada kelajuan tertentu, dan membunyikan penggera apabila kain siap dibasuh.
+
+Ketuhar Gelombang Mikro (Microwave): Mengawal paparan masa digital, memantau suhu, dan mematikan ketuhar secara automatik.
+
+Penghawa Dingin: Membaca suhu bilik menggunakan penderia dan melaras kelajuan pemampat (compressor).
+
+Sistem Automotif (Kenderaan):
+
+Sistem Brek ABS: Mikropengawal memantau kelajuan tayar beratus kali sesaat dan melepaskan brek secara automatik jika tayar terkunci ketika jalan licin.
+
+Sistem Pancitan Bahan Api (Fuel Injection): Mengira jumlah udara dan menyembur jumlah petrol yang paling optimum ke dalam enjin.
+
+Elektronik Pengguna:
+
+Alat Kawalan Jauh (Remote Control): Mikropengawal kecil membaca butang yang anda tekan dan menukarkannya kepada kod cahaya inframerah.
+
+Mainan Kanak-kanak: Kereta kawalan jauh atau patung yang boleh bercakap dan berkelip mata.
+
+Industri dan IoT:
+
+Lengan robotik di kilang, sistem mesin layan diri (vending machine), sistem cap jari, dan alat penggera keselamatan pintar.
+
+**3. Apakah itu PIC?**
+
+Kini kita sudah tahu apa itu mikropengawal, mari kita berkenalan dengan "PIC".
+
+PIC adalah singkatan kepada Peripheral Interface Controller (atau kadangkala dirujuk sebagai Programmable Intelligent Computer). Ia adalah satu keluarga (jenama) mikropengawal yang sangat popular, direka dan dikeluarkan oleh syarikat Microchip Technology.
+
+Di dalam BitWise PIC Microcontroller Kit, kita menggunakan salah satu cip PIC yang paling ikonik dan meluas digunakan di dunia iaitu siri PIC16F877A.
+
+Kenapa cip PIC ini sangat popular dalam industri dan pendidikan?
+
+Seni Bina RISC (Reduced Instruction Set Computer): Ia mempunyai senarai arahan dalaman yang sangat ringkas (hanya 35 arahan asas). Ini membuatkan ia beroperasi dengan sangat pantas dan cekap.
+
+Kukuh dan Tahan Lasak: Cip PIC sangat terkenal dengan kebolehannya bertahan dalam persekitaran industri yang bising (electrical noise) dan suhu yang ekstrem.
+
+Modul Terbina Dalam (Built-in Modules): PIC16F877A mempunyai pelbagai ciri mewah terbina di dalamnya, seperti:
+
+ADC (Analog-to-Digital Converter): Membolehkan cip "membaca" voltan dari sensor analog (suhu, kelembapan).
+
+PWM (Pulse Width Modulation): Membolehkan cip mengawal kelajuan motor dengan tepat.
+
+UART/I2C/SPI: Modul komunikasi untuk bersembang dengan cip atau peranti lain (seperti modul Bluetooth atau komputer).
+
+Mudah Diprogramkan: Ia sangat mesra pengguna dan mudah diprogramkan menggunakan bahasa C (seperti HI-TECH C) atau bahasa Himpunan (Assembly). Memori Flash di dalamnya membolehkan kita memadam dan memasukkan kod baharu beribu-ribu kali tanpa merosakkan cip.
+
+Dengan menguasai PIC16F877A pada BitWise PIC Microcontroller Kit, anda sebenarnya sedang membina asas yang sangat kukuh. Pemahaman ini akan memudahkan anda menguasai mana-mana sistem mikropengawal lain di pasaran pada masa akan datang!
+
+
 <img width="1024" height="767" alt="image" src="https://github.com/user-attachments/assets/d830033d-039e-4620-88f8-d12bab37b5cf" />
 
 
