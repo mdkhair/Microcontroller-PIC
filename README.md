@@ -74,6 +74,9 @@ Mudah Diprogramkan: Ia sangat mesra pengguna dan mudah diprogramkan menggunakan 
 
 Dengan menguasai PIC16F877A pada BitWise PIC Microcontroller Kit, anda sebenarnya sedang membina asas yang sangat kukuh. Pemahaman ini akan memudahkan anda menguasai mana-mana sistem mikropengawal lain di pasaran pada masa akan datang!
 
+<img width="1229" height="633" alt="image" src="https://github.com/user-attachments/assets/4f88ce13-108c-459b-90c7-960cd640a668" />
+
+
 **4. Perbezaan BitWise PIC Kit dengan Arduino dan Papan Pembangunan Lain**
 
 Mungkin anda tertanya-tanya, "Kenapa saya perlu belajar cip PIC sedangkan Arduino jauh lebih popular dan mudah?" Ini adalah satu persoalan yang sangat relevan. Berikut adalah perbezaan teras di antara keduanya:
