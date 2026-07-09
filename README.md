@@ -310,6 +310,28 @@ Cuba tukarkan RD0 kepada RD7. Apa yang berlaku?
 
 Cuba tukarkan masa __delay_ms(1000) kepada __delay_ms(100). Apa perbezaan pada mata anda?
 
+# Modul 1: Kawalan LED Lanjutan (Running Lights)
+
+Selepas berjaya mengerdipkan satu LED, mari kita gunakan kesemua 8 biji LED (L0 hingga L7) yang bersambung pada PORTD. Corak nyalaan yang paling popular untuk dipelajari ialah Running Lights (Lampu Berlari).
+
+Dalam latihan ini, kita akan belajar satu operasi tatabahasa C yang sangat berguna dipanggil Anjakan Bit (Bitwise Shift).
+
+Pengaturcaraan: Lampu Berlari (Bitwise Shift)
+
+Simbol << digunakan untuk menolak (shift) nilai binari ke arah kiri.
+Sebagai contoh, jika nilai awal lampu adalah 0b00000001 (hanya LED L0 menyala), operasi << 1 akan menolaknya menjadi 0b00000010 (LED L1 pula menyala).
+
+Sila buat projek baharu di MPLAB dan masukkan kod berikut:
+[Running Lights Programming](/RunningLight.c)
+
+Untuk faham asas LED tunggal, boleh rujuk kepada kod ini:
+[Single LED](/singleLED.c)
+
+Cabaran Makmal Modul 1:
+
+Eksperimen Arah: Bolehkah anda ubah suai kod di atas supaya lampu berlari dari arah kanan ke kiri (menggunakan simbol >>)?
+Eksperimen Corak: Cuba tukarkan nilai awal kepada unsigned char lampu = 0x03; (0b00000011). Apakah corak pergerakan baharu yang terhasil pada 8 biji LED tersebut?
+
 Apa itu __CONFIG()?
 __CONFIG() merujuk kepada Configuration Bits (atau sering dipanggil Fuses). Ini adalah tetapan asas perkakasan yang perlu dikonfigurasi sebelum cip mula menjalankan sebarang program.
 
