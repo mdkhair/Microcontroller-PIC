@@ -216,7 +216,19 @@ Penerangan Kerangka:
 
 #include <htc.h> : Arahan kepada pengkompil untuk memuatkan "kamus" rahsia PIC. Tanpa ini, perisian tidak akan faham apa itu PORTD atau TRISA.
 
-__CONFIG(...) : Ini adalah "fius perkakasan". FOSC_HS memberitahu cip untuk menggunakan kristal kelajuan tinggi luaran. WDTE_OFF mematikan pemasa anjing pengawal (Watchdog Timer) supaya cip tidak restart sendiri secara rawak.
+__CONFIG(...) : Ini adalah "fius perkakasan". FOSC_HS memberitahu cip untuk menggunakan kristal kelajuan tinggi luaran. WDTE_OFF mematikan pemasa anjing pengawal (Watchdog Timer) supaya cip tidak restart sendiri secara rawak. __CONFIG() merujuk kepada Configuration Bits (atau sering dipanggil Fuses). Ini adalah tetapan asas perkakasan yang perlu dikonfigurasi sebelum cip mula menjalankan sebarang program. Ia mengawal fungsi penting seperti: Jenis pengayun (oscillator/crystal) yang digunakan, mengaktifkan/mematikan Watchdog Timer, dan perlindungan kod (Code Protection). Ia boleh juga ditulis sebagai __CONFIG(0xFF32);. Ini dipanggil kaedah Hexadecimal Masking. Pengaturcara lama terpaksa mengira bit secara manual untuk mendapatkan nilai 0xFF32. Cara ini sangat tidak mesra pengguna kerana anda tidak tahu apa sebenarnya yang diaktifkan atau dimatikan melainkan anda merujuk kepada buku manual (datasheet) cip tersebut.
+
+Jenis CONFIG:
+FOSC_HS (High-Speed Oscillator): Ini wajib ada. Papan HJ-5G menggunakan pengayun kristal (crystal oscillator) luaran berkelajuan tinggi. Jika tidak ditulis, mikropengawal tidak akan mendapat isyarat denyut nadi (clock) yang betul dan program langsung tidak akan berjalan.
+
+WDTE_OFF (Watchdog Timer Disable): Ini juga wajib dimatikan. Jika dibiarkan (tetapan kilang adalah ON), program anda akan sentiasa restart (terset semula) dengan sendirinya setiap beberapa milisaat.
+
+LVP_OFF (Low Voltage Programming Disable): Ini sangat penting untuk cip PIC16F877A. Jika tidak dimatikan, pin RB3 akan dikunci khas untuk fungsi pengaturcaraan. Anda tidak akan boleh menggunakan pin RB3 untuk input/output biasa (merujuk kepada rajah litar papan HJ-5G, butang kekunci K4 bersambung terus ke RB3).
+
+Parameter yang digugurkan seperti PWRTE_ON, BOREN_OFF, CP_OFF (Code Protection), dan WRT_OFF lebih menjurus kepada perlindungan memori cip dan penstabilan bekalan kuasa industri.
+
+Jika anda membuangnya dari baris kod, pengkompil (compiler HI-TECH C) akan secara automatik membiarkan fungsi tersebut pada nilai lalai kilang (factory default). Untuk silibus pembelajaran seperti kerlipan LED, membaca suis, atau paparan LCD, ketiadaan parameter tambahan ini tidak akan memberi kesan negatif kepada kelancaran logik program anda. Maka, cukup untuk anda menulis __CONFIG(FOSC_HS & WDTE_OFF & LVP_OFF);
+
 
 _XTAL_FREQ : Memberitahu pengkompil bahawa kristal pada papan kita berkelajuan 12MHz. Ini sangat penting supaya fungsi lengah masa (__delay_ms) dapat dikira dengan tepat.
 
@@ -385,6 +397,7 @@ RA1 = Suis untuk Digit 5 (Melalui pelompat SE1/JP3)
 RA0 = Suis untuk Digit 6 (Paling Kanan, melalui pelompat SE2/JP3)3. 
 
 **Bagaimana Konsep Pemultipleksan Berfungsi?**
+
 Prinsip utamanya adalah "Satu pada satu masa, tetapi ditukar dengan sangat pantas."   Mikropengawal tidak pernah menghidupkan dua digit secara serentak. Ia bekerja dalam kitaran gelung (loop) seperti ini:
 1. Mikropengawal menghantar isyarat bentuk nombor pertama ke PORTD. Ia menghidupkan HANYA suis Digit 1 (RA5 = 1), dan digit lain dimatikan.
 2. Ia mengekalkan nyalaan itu selama lebih kurang 1 hingga 5 milisaat (delay).
@@ -392,9 +405,12 @@ Prinsip utamanya adalah "Satu pada satu masa, tetapi ditukar dengan sangat panta
 4. Kemudian, ia menghantar isyarat bentuk nombor kedua ke PORTD.Ia menghidupkan HANYA suis Digit 2 (RA4 = 1).
 5. Proses ini diulang untuk Digit 3 hingga 6, dan berpatah balik semula ke Digit 1 berulang kali dengan kelajuan yang melampau.
 
+Nota Keselamatan Perkakasan: Pastikan anda MENCABUT jumper JP1 (Jumper LED) ketika menggunakan 7-Segmen. Jika dipasang, arus akan terbahagi dua kepada deretan LED L0-L7, menyebabkan paparan 7-Segmen anda kelihatan malap! Pastikan juga blok jumper JP3 (SE1 dan SE2) telah dipasang.
+
 Pengaturcaraan: Memaparkan Semua Digit [7 Segment Programming](/7Segment.c)
 
 **Kenapa perlu Matikan fungsi Analog ADCON1 = 0x06?**
+
 Apabila mikropengawal PIC16F877A dihidupkan, pihak kilang (Microchip) telah menetapkan pin-pin pada PORTA dan PORTE supaya berfungsi sebagai Input Analog secara automatik.
 
 Fungsi Analog: Digunakan untuk membaca nilai voltan yang berubah-ubah (seperti sensor suhu, perintang peka cahaya, atau tombol kelantangan dari 0V hingga 5V).
@@ -420,28 +436,88 @@ Sebagai contoh, dengan mengubah nilai ADCON1, kita boleh memilih kombinasi berik
 3. ADCON1 = 0x04 (Campuran): Pin RA0, RA1, dan RA3 menjadi Analog (anda boleh sambungkan 3 sensor analog di sini). Baki pin yang lain di PORTA dan semua pin di PORTE menjadi Digital.
 4. ADCON1 = 0x0E (Hanya Satu Analog):Hanya pin RA0 menjadi Analog. Semua pin PORTA yang lain dan PORTE menjadi Digital.
 
-Apa itu __CONFIG()?
-__CONFIG() merujuk kepada Configuration Bits (atau sering dipanggil Fuses). Ini adalah tetapan asas perkakasan yang perlu dikonfigurasi sebelum cip mula menjalankan sebarang program.
+# Modul 4: Papan Kekunci Matriks 4x4 (Matrix Keypad)
 
-Ia mengawal fungsi penting seperti: Jenis pengayun (oscillator/crystal) yang digunakan, mengaktifkan/mematikan Watchdog Timer, dan perlindungan kod (Code Protection).
+Jika anda perlukan pengguna untuk memasukkan nombor telefon atau kata laluan, butang bebas (K1-K4) tidak mencukupi. Kita memerlukan 16 butang (S1 hingga S16). Tetapi, adakah kita perlu mengorbankan 16 pin Input pada PIC? Tentu sekali tidak!
 
-Ia boleh juga ditulis sebagai __CONFIG(0xFF32);. Ini dipanggil kaedah Hexadecimal Masking. Pengaturcara lama terpaksa mengira bit secara manual untuk mendapatkan nilai 0xFF32. Cara ini sangat tidak mesra pengguna kerana anda tidak tahu apa sebenarnya yang diaktifkan atau dimatikan melainkan anda merujuk kepada buku manual (datasheet) cip tersebut.
+Jurutera menggunakan konsep pengimbasan (scanning) yang dipanggil Matriks. Butang-butang disusun secara grid (4 Baris x 4 Lajur). Dengan cara ini, kita hanya memerlukan 8 pin sahaja untuk mengawal 16 butang.
 
-Jenis CONFIG:
-FOSC_HS (High-Speed Oscillator): Ini wajib ada. Papan HJ-5G menggunakan pengayun kristal (crystal oscillator) luaran berkelajuan tinggi. Jika tidak ditulis, mikropengawal tidak akan mendapat isyarat denyut nadi (clock) yang betul dan program langsung tidak akan berjalan.
+**Konsep Imbasan Matriks pada HJ-5G**
 
-WDTE_OFF (Watchdog Timer Disable): Ini juga wajib dimatikan. Jika dibiarkan (tetapan kilang adalah ON), program anda akan sentiasa restart (terset semula) dengan sendirinya setiap beberapa milisaat.
+Pada papan BitWise PIC Kit anda:
+Baris (Row): Dikawal oleh Output RB4, RB5, RB6, RB7
+Lajur (Column): Dibaca oleh Input RB0, RB1, RB2, RB3
 
-LVP_OFF (Low Voltage Programming Disable): Ini sangat penting untuk cip PIC16F877A. Jika tidak dimatikan, pin RB3 akan dikunci khas untuk fungsi pengaturcaraan. Anda tidak akan boleh menggunakan pin RB3 untuk input/output biasa (merujuk kepada rajah litar papan HJ-5G, butang kekunci K4 bersambung terus ke RB3).
+Cara CIP berfikir:
+1. Hantar voltan 0V (LOW) ke Baris 1 (RB7), manakala Baris 2,3,4 dibiarkan 5V (HIGH).
+2. Baca PORTB. Jika butang pertama di sudut atas-kiri ditekan, arus akan mengalir, dan Input RB0 (Lajur 1) akan menjadi LOW (0).
+3. Maka cip tahu: "Baris 1 dan Lajur 1 sedang bersambung!"
+4. Cip menukar 0V ke Baris 2 pula, dan ulang proses pembacaan untuk seluruh grid.
 
-Parameter yang digugurkan seperti PWRTE_ON, BOREN_OFF, CP_OFF (Code Protection), dan WRT_OFF lebih menjurus kepada perlindungan memori cip dan penstabilan bekalan kuasa industri.
+Mari kita buat kod ringkas yang mengimbas Baris 1 sahaja (melibatkan butang S1, S2, S3, dan S4). Jika anda tekan butang tersebut, nilai Hex-nya akan terpapar pada LED PORTD.
+Pengaturcaraan: [Penguji Butang Matriks (Kesan S1-S4)](KeypadMatrixV1.c)
 
-Jika anda membuangnya dari baris kod, pengkompil (compiler HI-TECH C) akan secara automatik membiarkan fungsi tersebut pada nilai lalai kilang (factory default). Untuk silibus pembelajaran seperti kerlipan LED, membaca suis, atau paparan LCD, ketiadaan parameter tambahan ini tidak akan memberi kesan negatif kepada kelancaran logik program anda.
+Apabila anda memuat naik kod ini (ingat: Jangan tekan butang matriks semasa proses Download kerana ia berkongsi pin dengan programmer PICkit), anda boleh mencuba menekan butang barisan paling atas. Lampu LED akan menyala menunjukkan cip berjaya mengesan persilangan matriks tersebut!
 
-Maka, cukup untuk anda menulis __CONFIG(FOSC_HS & WDTE_OFF & LVP_OFF);
+Cabaran Makmal Modul 4:
+1. Uji Baris 2: Berdasarkan kod di atas, bagaimana anda mengubah nilai PORTB = 0x7F; untuk mengimbas butang di Baris 2 (RB6 = LOW)? (Petunjuk: Cuba tukar nilai tersebut kepada 0b10111111 atau 0xBF dan uji butang S5 hingga S8).
+2. Kembangkan Fungsi (Kerja Rumah): Cuba tambah blok PORTB = 0xBF;, baca nilainya, dan gabungkan dalam satu gelung while(1) supaya cip anda boleh mengesan kedua-dua Baris 1 dan Baris 2 secara berterusan (berselang seli pada kelajuan tinggi). Ini adalah rahsia sebenar Matrix Scanning!
 
+# Modul 5: Pemasa (Timer0) dan Sampukan (Interrupts)
 
-**4. Memahami Kod Arahan Hex LCD (Command Glossary)**
+Setakat ini, semua kod yang kita tulis terikat di dalam while(1). Jika kita menggunakan fungsi __delay_ms(1000) untuk mengerdipkan LED, cip PIC akan menunggu dan membeku sepenuhnya selama 1 saat. Ia tidak boleh membaca butang matriks atau mengesan sensor semasa ia sedang leka "menunggu".
+
+Ini dipanggil kaedah Polling (Tunggu dan Lihat).
+
+Jurutera profesional menggunakan kaedah Interrupts (Sampukan) dan Pemasa Perkakasan (Hardware Timers).
+
+**Analogi Masak Air**
+
+1. Polling (Tanpa Interrupt): Anda letak air di atas dapur, dan anda berdiri merenung cerek tersebut selama 10 minit sehingga ia mendidih. Anda tidak boleh buat kerja lain.
+2. Interrupt (Dengan Timer): Anda letak air di atas cerek berbunyi (whistling kettle). Anda bebas pergi sapu sampah atau tengok TV. Apabila air mendidih, cerek akan berbunyi ("menyampuk" / interrupt anda). Anda berhenti sekejap, tutup api, dan sambung semula tengok TV. Cip kini multi-tugas (multi-tasking)!
+
+**Bagaimana Timer0 Berfungsi?**
+
+PIC16F877A mempunyai litar jam randik maya yang dipanggil TMR0 (Timer 0). Ia adalah sebuah bakul memori bersaiz 8-bit. Ia akan mengira dari 0 sehingga 255.
+Apabila ia mencapai 256, bakul itu akan "tumpah" (Overflow), lalu ia menghantar isyarat kecemasan / sampukan kepada otak cip PIC (T0IF = 1).
+
+Mari kita buat LED L7 (RD7) berkelip sendiri tanpa mengganggu fungsi gelung utama main().
+Pengaturcaraan: [LED Berkelip di Latar Belakang (Tanpa delay_ms)](/BlinkLEDInterrupt.c)
+
+Apabila anda memuat turun kod ini, anda akan mendapati LED di hujung papan (L7) berkelip dengan teratur. Menariknya, gelung while(1) anda kini kosong dan bebas sepenuhnya!
+
+Teknik Timer Interrupt inilah yang digunakan dalam modul 7-Segmen Lanjutan (untuk membebaskan cip dari tersekat pada arahan Multiplexing Delay) dan digunakan secara meluas untuk pemprosesan isyarat Penderia Inframerah.
+
+**Cabaran Makmal Modul 6:**
+
+1. Ubah Kelajuan: Berdasarkan fungsi ISR di atas, tukarkan nilai kiraan_masa >= 45 kepada kiraan_masa >= 10. Perhatikan bagaimana LED berkelip dengan lebih laju.
+2. Kembangkan Tugas Latar Belakang: Bolehkah anda menambah arahan di dalam gelung ISR supaya ia menogol LED RD0 dan RD7 secara berselang-seli (Lampu Polis) secara automatik di latar belakang?
+
+# Modul 6: Paparan Skrin LCD 1602
+Skrin 7-Segmen sangat bagus untuk memaparkan nombor, tetapi bagaimana jika kita mahu memaparkan teks mesej seperti "AMARAN" atau nama kita? Untuk tujuan ini, kita menggunakan modul LCD 1602 (16 aksara x 2 baris).
+
+LCD ini adalah sebuah modul yang agak kompleks kerana ia mempunyai cip pemprosesannya sendiri (biasanya HD44780). Oleh itu, cip PIC kita perlu berkomunikasi dengan cip LCD menggunakan satu set protokol yang ketat.
+
+Konsep Kawalan LCD (Arahan vs Data)
+
+Pada papan BitWise PIC Kit:
+1. Pin Data 8-bit: Disambung ke PORTD (RD0 hingga RD7).
+2. Pin Kawalan 3-bit: Disambung ke PORTA.
+3. RS (Register Select) pada RA5: Ini adalah penentu utama.
+4. Jika RS = 0, cip PIC memberitahu LCD: "Ini adalah ARAHAN!" (Contoh: Padam skrin, pergi ke baris dua).
+5. Jika RS = 1, cip PIC memberitahu LCD: "Ini adalah TEKS!" (Contoh: Cetak huruf 'A').
+6. RW (Read/Write) pada RA4: Kita biasanya tetapkan ia ke 0 (Tulis/Write).
+7. E (Enable) pada RA3: Ini ibarat butang "Enter". Setiap kali kita hantar arahan atau teks ke PORTD, kita wajib memberi satu denyutan kelajuan tinggi (HIGH ke LOW) pada pin E supaya LCD menyedut data tersebut.
+
+Peringatan: Kerana pin kawalan menggunakan PORTA, anda wajib menukar PORTA ke digital dengan ADCON1 = 0x06.
+
+Pengaturcaraan: Cetak ["Hello World!"](/HelloWorldLCD.c)
+
+Daripada menulis segala arahan di dalam main(), kita akan membina fungsi khas (Functions) kita sendiri iaitu lcd_cmd(), lcd_data(), dan lcd_string() untuk menjadikan kod kita lebih kemas dan profesional.
+
+Nota Penyelesaian Masalah (Troubleshooting): Selepas memuat naik kod ini, jika skrin LCD anda kelihatan hanya memaparkan kotak-kotak hitam kosong, atau teks "Hello World!" tidak kelihatan, jangan panik! Anda hanya perlu memutarkan skru biru kecil pada potentiometer (W1) pada papan anda menggunakan pemutar skru nipis untuk melaraskan kontras skrin sehingga tulisan itu muncul dengan jelas.
+
+**Memahami Kod Arahan Hex LCD (Command Glossary)**
 
 _Matikan Fungsi Analog (ADCON1 = 0x06;): Seperti yang kita pelajari sebelum ini, pin kawalan LCD iaitu RA5, RA4, dan RA3 terletak pada PORTA. Anda wajib menukarnya ke mod Digital, jika tidak skrin LCD langsung tidak akan bertindak balas!_
 
@@ -450,6 +526,12 @@ _Cabut Pelompat JP1: Memandangkan bas data PORTD dikongsi bersama modul 8 LED (R
 Dalam kod di atas, kita banyak menggunakan nilai Heksadesimal seperti 0x38, 0x0C, 0x80, dan 0xC0. Berikut adalah senarai rujukan pantas arahan LCD yang paling berguna untuk pengajaran dalam makmal:
 
 <img width="476" height="383" alt="image" src="https://github.com/user-attachments/assets/d984709e-6817-45dd-9b76-8a51c4520364" />
+
+**Cabaran Makmal Modul 6:**
+
+1. Ubah Teks: Cuba ubah ayat "Hello World!" kepada nama anda (maksimum 16 huruf).
+2. Menulis di Baris Kedua: Untuk menyuruh skrin LCD berpindah ke bawah (Baris 2, Petak 1), arahan rasminya ialah 0xC0. Cuba letakkan arahan lcd_cmd(0xC0); di bawah ayat "Hello World!", kemudian cetak pula ayat "PIC16F877A" menggunakan lcd_string(). Hasilnya skrin anda akan mempunyai teks di bahagian atas dan bawah!
+
 
 
 
