@@ -74,10 +74,75 @@ Mudah Diprogramkan: Ia sangat mesra pengguna dan mudah diprogramkan menggunakan 
 
 Dengan menguasai PIC16F877A pada BitWise PIC Microcontroller Kit, anda sebenarnya sedang membina asas yang sangat kukuh. Pemahaman ini akan memudahkan anda menguasai mana-mana sistem mikropengawal lain di pasaran pada masa akan datang!
 
+**4. Perbezaan BitWise PIC Kit dengan Arduino dan Papan Pembangunan Lain**
 
+Mungkin anda tertanya-tanya, "Kenapa saya perlu belajar cip PIC sedangkan Arduino jauh lebih popular dan mudah?" Ini adalah satu persoalan yang sangat relevan. Berikut adalah perbezaan teras di antara keduanya:
+
+Tahap Abstraksi dan Pengaturcaraan:
+
+Arduino (Papan Hobi & Prototaip): Direka khas untuk pemula dan pereka. Ia sangat mudah kerana ia menyembunyikan kerumitan litar elektronik menggunakan "Perpustakaan" (Libraries). Sebagai contoh, jika anda mahu menyalakan lampu LED di Arduino, anda hanya menaip digitalWrite(pin, HIGH);. Anda tidak perlu tahu bagaimana litar dalamannya berfungsi.
+
+BitWise PIC Kit (Tahap Perkakasan Bare-Metal): Memaksa anda untuk berinteraksi terus dengan memori dan litar dalaman mikropengawal (dipanggil Daftar atau Registers). Untuk menyalakan LED pada PIC, anda mesti memahami konsep aliran data dan menaip TRISD = 0x00; diikuti PORTD = 0xFF;. Ia lebih mencabar pada mulanya, tetapi ia mengajar anda bagaimana sebuah cip elektronik benar-benar berfikir dan berfungsi dari akar umbi.
+
+Ekosistem & Sokongan:
+
+Arduino mempunyai komuniti open-source terbesar di dunia. Hampir semua sensor mempunyai kod sedia ada yang boleh dimuat turun.
+
+PIC mempunyai sokongan rasmi yang kuat daripada syarikat korporat (Microchip), menjadikannya lebih profesional dengan dokumentasi manual teknikal (datasheet) yang sangat terperinci dan diiktiraf industri.
+
+Papan Pembangunan Lain (seperti Raspberry Pi):
+
+Raspberry Pi BUKAN mikropengawal. Ia adalah sebuah komputer mikro (Mikropemproses) berskala penuh yang menjalankan sistem operasi seperti Windows atau Linux. Ia sesuai untuk kecerdasan buatan (AI) atau pemprosesan imej, tetapi ia terlalu "mahal dan perlahan" untuk mengawal suis motor dalam masa nyata (real-time) jika dibandingkan dengan PIC.
+
+**5. Bila Ia Sesuai Digunakan?**
+
+Setiap platform mempunyai peranan dan bidang kekuatannya yang tersendiri:
+
+Pilih Arduino atau Papan IoT (seperti ESP32) jika:
+
+Anda mahu membina prototaip idea (Proof of Concept) dengan pantas.
+
+Anda membuat projek hobi hujung minggu (seperti sistem pam penyiram pokok pintar) di rumah.
+
+Anda memerlukan akses ke Internet atau WiFi dengan cepat tanpa perlu memahami selok-belok isyarat radio.
+
+Pilih BitWise PIC Microcontroller Kit jika:
+
+Pendidikan Kejuruteraan & TVET: Anda berada di institusi latihan kemahiran atau universiti. Mempelajari PIC akan menjadikan anda seorang "Jurutera Elektronik" sebenar yang boleh mencipta sistem sendiri, bukannya sekadar "Pengguna Kod" (Code Assembler).
+
+Persekitaran Industri Lasak: Anda perlu mereka bentuk litar untuk dipasang di kilang perkilangan yang panas atau di dalam enjin kenderaan. Mikropengawal PIC terbukti mempunyai tahap ketahanan (robustness) dan imuniti terhadap gangguan elektrik (noise immunity) yang sangat cemerlang.
+
+Kerjaya Penyelenggaraan (Maintenance): Ribuan sistem legasi (legacy systems) industri berkuasa tinggi, panel kawalan lif, dan perkakasan perubatan di luar sana dibina menggunakan mikropengawal PIC. Menguasainya memberi anda kelebihan yang besar di pasaran pekerjaan teknikal.
+
+**6. Kenali Papan BitWise PIC Microcontroller Kit**
+
+Papan pembangunan BitWise PIC Microcontroller Kit (berasaskan reka bentuk HJ-5G) adalah sebuah makmal elektronik serba lengkap (All-in-One Trainer Board). Ia direka supaya pelajar boleh terus menulis kod dan melihat hasilnya tanpa perlu membuat pendawaian breadboard yang berselirat dan sering terdedah kepada masalah litar pintas.
+
+Papan ini didatangkan dengan pelbagai modul perkakasan sedia ada (on-board modules), antaranya:
+
+Modul Output Visual: * 8 unit Lampu LED Berderet (Untuk latihan logik asas).
+
+6-Digit Paparan 7-Segmen (Untuk memaparkan nombor dan sensor).
+
+Soket Skrin LCD 1602 (Untuk memaparkan teks dan mesej).
+
+Modul Input Berangka: * 4 unit Butang Tekan Bebas (Independent Keys).
+
+16 unit Butang Papan Kekunci Matriks 4x4 (Matrix Keypad).
+
+Modul Bunyi & Isyarat: * Pembaz Aktif (Buzzer).
+
+Penerima Alat Kawalan Jauh Inframerah (IR Receiver - IR1838).
+
+Modul Lanjutan: Cip memori EEPROM (AT24C02), Jam Masa Nyata / RTC (DS1302), dan input penderia analog (Potentiometer).
 <img width="1024" height="767" alt="image" src="https://github.com/user-attachments/assets/d830033d-039e-4620-88f8-d12bab37b5cf" />
 
+**7. Jadual Pemetaan Pin (Pin Mapping)**
 
+Ini adalah rujukan paling krikital sepanjang anda menggunakan kit ini. Oleh kerana papan ini merangkumkan banyak modul, beberapa pin dikongsi bersama. Jadual ini menunjukkan pin mikropengawal PIC16F877A mana yang bersambung kepada modul fizikal di atas papan.
+<img width="640" height="473" alt="image" src="https://github.com/user-attachments/assets/36123df7-cc92-40d5-9743-a6a0ae1f5744" />
+
+Tips: Pin pada mikropengawal adalah terhad. Oleh itu, pereka papan ini mengamalkan Perkongsian Bas (Bus Sharing). Sebagai contoh, PORTD digunakan oleh LED, 7-Segmen, dan LCD. Anda tidak boleh menggunakan ketiga-tiga modul ini secara serentak tanpa logik kawalan (multiplexing) yang betul.
 
 Apa itu __CONFIG()?
 __CONFIG() merujuk kepada Configuration Bits (atau sering dipanggil Fuses). Ini adalah tetapan asas perkakasan yang perlu dikonfigurasi sebelum cip mula menjalankan sebarang program.
