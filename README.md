@@ -332,6 +332,70 @@ Cabaran Makmal Modul 1:
 Eksperimen Arah: Bolehkah anda ubah suai kod di atas supaya lampu berlari dari arah kanan ke kiri (menggunakan simbol >>)?
 Eksperimen Corak: Cuba tukarkan nilai awal kepada unsigned char lampu = 0x03; (0b00000011). Apakah corak pergerakan baharu yang terhasil pada 8 biji LED tersebut?
 
+# Modul 2: Kawalan Input - Butang Bebas (Independent Keys)
+
+Selepas berjaya mengawal Output (LED), kini masa untuk kita belajar bagaimana cip PIC "membaca" keadaan persekitaran menggunakan Input. Input yang paling mudah dan asas adalah Butang Tekan (Push Button).
+
+Pada papan BitWise PIC Kit, terdapat 4 butang bebas (K1 hingga K4) yang disambungkan pada pin RB0 hingga RB3 di port PORTB.
+
+Konsep "Active-Low" dan "Pull-Up Resistor"
+
+Active-Low: Butang pada papan ini direka menggunakan logik Active-Low. Maksudnya:
+
+Apabila butang TIDAK ditekan = Cip membaca logik 1 (HIGH)
+
+Apabila butang DITEKAN = Cip membaca logik 0 (LOW)
+
+Perintang Tarik-Naik (Pull-Up Resistor): Untuk memastikan pin PORTB membaca nilai '1' secara stabil apabila butang tidak ditekan (tiada arus), kita wajib mengaktifkan perintang tarik-naik dalaman (Internal Pull-Up Resistor) di dalam cip PIC dengan baris kod OPTION_REG &= 0x7F;.
+
+Pengaturcaraan: Kawal LED menggunakan Butang
+
+Mari kita tulis kod supaya apabila butang K1 (RB0) ditekan, LED L0 (RD0) akan menyala bersamanya.
+
+[Push Button Programming](/PushButton.c)
+
+Cabaran Makmal Modul 2:
+
+Kawalan Silang: Bolehkah anda ubah kod supaya butang K1 menyalakan LED L7 (RD7) di hujung sana?
+Fungsi Terbalik: Cuba tukarkan logik supaya LED L0 sentiasa menyala, dan ia hanya terpadam apabila anda menekan butang K1.
+Tambah Butang (Bonus): Gunakan butang K2 (RB1) untuk menyalakan LED L1 (RD1) secara serentak dan berasingan. (Petunjuk: Anda perlu menambah struktur blok if...else yang baharu di bawah blok K1 di dalam gelung utam
+
+# Modul 3: Paparan 7-Segmen (Asas Multiplexing)
+
+Pada papan BitWise PIC Kit anda, terdapat 6 digit paparan bernombor merah yang dipanggil 7-Segmen. Sebenarnya, setiap "digit" ini hanyalah 8 biji lampu LED biasa yang disusun membentuk angka '8' dan satu titik perpuluhan (dp).
+
+Konsep Perkakasan (Katod Sepunya & Suis Pemilih)
+
+
+<img width="300" height="271" alt="image" src="https://github.com/user-attachments/assets/d4da264a-ac89-4f82-957f-f0a15b01aa5a" />
+
+PORTD (Bentuk Nombor): Pin RD0 hingga RD7 mengawal corak lampu (Segmen A-G dan DP). Untuk membentuk angka '1', kita perlu menyalakan Segmen B dan C (0x06).
+
+PORTA (Pemilih Digit): Oleh kerana kita ada 6 digit, kita tidak mempunyai cukup pin untuk mengawal kesemuanya secara berasingan. Jadi, jurutera menyambungkan semua segmen secara selari (Multiplexing). Kita menggunakan PORTA (RA0 hingga RA5) sebagai Suis Transistor untuk memilih digit mana yang ingin dihidupkan.
+
+Kunci Perkakasan Wajib: Papan ini mempunyai litar perlindungan/penimbal (Buffer IC) yang dikawal oleh PORTC. Anda mesti mengaktifkannya dalam kod! Selain itu, PORTA asalnya adalah pin Analog, kita mesti menukarkannya kepada Digital menggunakan ADCON1.
+
+**Kawalan Digit (Pemultipleks / Multiplexer) pada PORTA**
+Jika semua Segmen A dikongsi pada satu wayar RD0, macam mana kita nak paparkan nombor yang berbeza pada digit berbeza (contoh: 123456)?Di sinilah sistem pemultipleks / imbasan dinamik (dynamic scanning) memainkan peranan. Daripada menghidupkan semua digit serentak, mikropengawal mengawal suis kuasa untuk setiap blok digit secara berasingan menggunakan cip pemandu ULN2003A yang disambungkan ke PORTA.  Pemetaan pin suis kuasa (Digit):
+RA5 = Suis untuk Digit 1 (Paling Kiri)
+RA4 = Suis untuk Digit 2
+RA3 = Suis untuk Digit 3
+RA2 = Suis untuk Digit 4
+RA1 = Suis untuk Digit 5 (Melalui pelompat SE1/JP3)
+RA0 = Suis untuk Digit 6 (Paling Kanan, melalui pelompat SE2/JP3)3. 
+
+**Bagaimana Konsep Pemultipleksan Berfungsi?**
+Prinsip utamanya adalah "Satu pada satu masa, tetapi ditukar dengan sangat pantas."   Mikropengawal tidak pernah menghidupkan dua digit secara serentak. Ia bekerja dalam kitaran gelung (loop) seperti ini:
+1. Mikropengawal menghantar isyarat bentuk nombor pertama ke PORTD. Ia menghidupkan HANYA suis Digit 1 (RA5 = 1), dan digit lain dimatikan.
+2. Ia mengekalkan nyalaan itu selama lebih kurang 1 hingga 5 milisaat (delay).
+3. Ia memadamkan Digit 1 semula (ini dipanggil blanking untuk elak bayang nombor).
+4. Kemudian, ia menghantar isyarat bentuk nombor kedua ke PORTD.Ia menghidupkan HANYA suis Digit 2 (RA4 = 1).
+5. Proses ini diulang untuk Digit 3 hingga 6, dan berpatah balik semula ke Digit 1 berulang kali dengan kelajuan yang melampau.
+
+Pengaturcaraan: Memaparkan Angka pada 1 Digit
+
+Dalam contoh ini, kita akan menggunakan Array (Tatasusunan) supaya kita tidak perlu menghafal kod Hexadecimal untuk setiap nombor. Kita akan memaparkan angka '5' pada digit yang paling kana
+
 Apa itu __CONFIG()?
 __CONFIG() merujuk kepada Configuration Bits (atau sering dipanggil Fuses). Ini adalah tetapan asas perkakasan yang perlu dikonfigurasi sebelum cip mula menjalankan sebarang program.
 
