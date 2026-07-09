@@ -144,6 +144,74 @@ Ini adalah rujukan paling krikital sepanjang anda menggunakan kit ini. Oleh kera
 
 Tips: Pin pada mikropengawal adalah terhad. Oleh itu, pereka papan ini mengamalkan Perkongsian Bas (Bus Sharing). Sebagai contoh, PORTD digunakan oleh LED, 7-Segmen, dan LCD. Anda tidak boleh menggunakan ketiga-tiga modul ini secara serentak tanpa logik kawalan (multiplexing) yang betul.
 
+**8. Perisian dan Alat Pembangunan (Software & Tools)**
+
+Untuk menjadikan mikropengawal ini "hidup", kita memerlukan gabungan perisian komputer (Software) dan alat perkakasan (Hardware). Dalam modul ini, kita menggunakan perisian MPLAB IDE v8.92 dan alat pemprogram PICkit 2.
+
+Apakah fungsi mereka dan bagaimana kod anda dibaca oleh mikropengawal?
+
+a) Perisian: MPLAB IDE v8.92 dan Pengkompil (Compiler)
+
+MPLAB IDE adalah sebuah meja kerja maya (Integrated Development Environment). Di sinilah anda akan menaip kod anda menggunakan bahasa manusia (Bahasa C).
+
+Namun, cip mikropengawal PIC tidak faham bahasa Inggeris atau Bahasa C. Ia hanya faham bahasa mesin, iaitu nombor 0 dan 1 (Binary). Di sinilah Pengkompil (Compiler) memainkan peranan.
+
+Apakah Pengkompil (Compiler)? Ia bertindak seperti seorang penterjemah. Dalam kes kita, kita menggunakan pengkompil HI-TECH C. Apabila anda menekan butang "Build" di MPLAB, Pengkompil akan menterjemah kod bahasa C anda ke dalam kod mesin (0 dan 1) dan menghasilkan satu fail baharu yang dipanggil fail .hex (Hexadecimal).
+
+b) Perkakasan: PICkit 2 Programmer
+
+Setelah kita mendapat fail .hex, bagaimana kita nak masukkannya ke dalam cip fizikal? Kita perlukan sebuah jambatan penghubung yang dipanggil Pemprogram (Programmer).
+
+Apakah Programmer? PICkit 2 adalah sebuah alat elektronik kecil yang bersambung ke komputer anda melalui kabel USB. Tugasnya adalah mengambil fail .hex dari komputer, dan menyuntik / "membakar" (burn) kod tersebut terus ke dalam Memori Flash mikropengawal PIC secara elektronik menggunakan isyarat voltan tertentu.
+
+c) Kitaran Penuh: Bagaimana Kod Dibaca oleh PIC?
+
+Berikut adalah ringkasan proses dari papan kekunci anda sehingga ke nyalaan LED:
+
+Menulis Kod (Code): Anda menaip logik anda dalam bahasa C di MPLAB IDE v8.92. (Contoh: RD0 = 1;)
+
+Terjemahan (Compile): HI-TECH C Compiler menukarkan fail C tersebut menjadi fail .hex yang mengandungi siri nombor binari yang tidak difahami manusia.
+
+Memuat Turun (Burn/Flash): Anda menekan butang muat turun. PICkit 2 Programmer akan menghantar fail .hex ini melalui kabel USB dan menyimpannya secara kekal di dalam memori ROM cip PIC16F877A.
+
+Perlaksanaan (Execute): Sebaik sahaja cip PIC diberikan kuasa (bateri/USB), CPU di dalamnya akan mula membaca memori tersebut baris demi baris, beribu-ribu kali sesaat, dan menterjemahkannya kepada tindakan fizikal (seperti menyalakan LED atau membunyikan penggera).
+
+**Tutorial 1: Asas Pengaturcaraan PIC (Bahasa C)**
+
+Sebelum kita mengawal modul-modul canggih di atas BitWise PIC Microcontroller Kit, kita perlu memahami "tatabahasa" (sintaks) bagaimana untuk bercakap dengan mikropengawal ini.
+
+Dalam kit ini, kita menggunakan Bahasa C dan pengkompil HI-TECH C.
+
+1. Struktur Asas Kod PIC (Kerangka Wajib)
+
+```c
+// 1. Fail Pengepala (Header File)
+#include <htc.h> 
+
+// 2. Tetapan Fius (Configuration Bits)
+__CONFIG(FOSC_HS & WDTE_OFF & LVP_OFF);
+
+// 3. Kelajuan Jam / Kristal (Clock Speed)
+#define _XTAL_FREQ 12000000 
+
+// 4. Fungsi Utama (Main Function)
+void main() {
+    
+    // (A) Ruang Tetapan Awal (Initialization)
+    // Kod di sini hanya dibaca SEKALI sahaja apabila cip dihidupkan.
+    
+    // 5. Gelung Infiniti (Infinite Loop)
+    while(1) {
+        
+        // (B) Ruang Kerja (Super Loop)
+        // Kod di sini akan diulang beribu-ribu kali sesaat selagi cip mempunyai bekalan kuasa.
+        
+    }
+}
+```
+
+Setiap kali anda memulakan projek baharu di MPLAB, anda mesti membina "kerangka" kod ini. Tanpa kerangka ini, cip anda tidak akan dapat berfungsi.
+
 Apa itu __CONFIG()?
 __CONFIG() merujuk kepada Configuration Bits (atau sering dipanggil Fuses). Ini adalah tetapan asas perkakasan yang perlu dikonfigurasi sebelum cip mula menjalankan sebarang program.
 
