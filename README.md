@@ -392,9 +392,33 @@ Prinsip utamanya adalah "Satu pada satu masa, tetapi ditukar dengan sangat panta
 4. Kemudian, ia menghantar isyarat bentuk nombor kedua ke PORTD.Ia menghidupkan HANYA suis Digit 2 (RA4 = 1).
 5. Proses ini diulang untuk Digit 3 hingga 6, dan berpatah balik semula ke Digit 1 berulang kali dengan kelajuan yang melampau.
 
-Pengaturcaraan: Memaparkan Angka pada 1 Digit
+Pengaturcaraan: Memaparkan Semua Digit [7 Segment Programming](/7Segment.c)
 
-Dalam contoh ini, kita akan menggunakan Array (Tatasusunan) supaya kita tidak perlu menghafal kod Hexadecimal untuk setiap nombor. Kita akan memaparkan angka '5' pada digit yang paling kana
+**Kenapa perlu Matikan fungsi Analog ADCON1 = 0x06?**
+Apabila mikropengawal PIC16F877A dihidupkan, pihak kilang (Microchip) telah menetapkan pin-pin pada PORTA dan PORTE supaya berfungsi sebagai Input Analog secara automatik.
+
+Fungsi Analog: Digunakan untuk membaca nilai voltan yang berubah-ubah (seperti sensor suhu, perintang peka cahaya, atau tombol kelantangan dari 0V hingga 5V).
+
+Fungsi Digital: Digunakan untuk isyarat ON dan OFF sahaja (Logik 1 atau 0).
+
+Seperti yang kita bincangkan sebelum ini, papan ini menggunakan pin RA0 hingga RA5 (PORTA) untuk menghidupkan dan mematikan suis pemandu digit (ULN2003) bagi skrin 7-segmen.
+
+Jika anda cuba mengarahkan RA5 = 1; (minta cip keluarkan isyarat HIGH) tetapi pin tersebut masih berada dalam mod Analog, cip tidak akan mengendahkan arahan anda. Akibatnya, arus tidak akan keluar dan skrin 7-segmen anda akan terus bergelap.
+
+ADCON1 merujuk kepada Analog-to-Digital Control Register 1. Dalam buku manual (datasheet) PIC16F877A, pengeluar telah menyediakan satu jadual khas.
+
+Jika anda memasukkan kod hex 0x06 (yang bersamaan dengan binari 0B00000110) ke dalam ADCON1, ia adalah kata laluan rasmi untuk memberitahu cip:
+
+"Tolong matikan semua fungsi bacaan sensor analog, dan tukarkan kesemua pin PORTA dan PORTE kepada mod Input/Output Digital biasa."
+
+Sebaik sahaja fungsi ini dimatikan, barulah PORTA boleh berfungsi seperti suis biasa untuk mengawal nyalaan digit 7-segmen tersebut dengan sempurna.
+
+Sebagai contoh, dengan mengubah nilai ADCON1, kita boleh memilih kombinasi berikut:
+
+1. ADCON1 = 0x00 (Lalai Kilang): * Semua pin pada PORTA dan PORTE bertindak sebagai Analog.
+2. ADCON1 = 0x06 (100% Digital): Semua pin pada PORTA dan PORTE bertindak sebagai Digital I/O. (Ini yang kita gunakan untuk projek 7-segmen tadi).
+3. ADCON1 = 0x04 (Campuran): Pin RA0, RA1, dan RA3 menjadi Analog (anda boleh sambungkan 3 sensor analog di sini). Baki pin yang lain di PORTA dan semua pin di PORTE menjadi Digital.
+4. ADCON1 = 0x0E (Hanya Satu Analog):Hanya pin RA0 menjadi Analog. Semua pin PORTA yang lain dan PORTE menjadi Digital.
 
 Apa itu __CONFIG()?
 __CONFIG() merujuk kepada Configuration Bits (atau sering dipanggil Fuses). Ini adalah tetapan asas perkakasan yang perlu dikonfigurasi sebelum cip mula menjalankan sebarang program.
