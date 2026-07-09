@@ -1,7 +1,7 @@
 #include <htc.h>
 
 __CONFIG(FOSC_HS & WDTE_OFF & LVP_OFF);
-#define _XTAL_FREQ 12000000 
+#define _XTAL_FREQ 4000000 
 
 void main() {
     
